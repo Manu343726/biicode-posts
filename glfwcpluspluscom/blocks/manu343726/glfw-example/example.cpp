@@ -25,72 +25,17 @@
 //! [code]
 
 #include <diego/glfw/include/GLFW/glfw3.h>
+#include <manu343726/scoped_resource/scoped_resouce.hpp>
 
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <stdexcept>
-#include <utility>
-#include <functional>
 
-static void error_callback(int error, const char* description)
-{
-    fputs(description, stderr);
-}
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-}
 
-template<typename T>
-struct scoped_resource
-{
-public:
-    using initializer_t = void(T&);
-    using releaser_t = void(T&);
-    
-private:
-    std::function<void(T&)> _releaser;
-    T _resource;
-    
-public:
-    template<typename... ARGS , typename R>
-    scoped_resource(initializer_t init , R release , ARGS&&... args) : 
-        _releaser{ release },
-        _resource{ std::forward<ARGS>(args)... }      
-    {
-        init(_resource);
-    }
 
-    ~scoped_resource()
-    {
-        _releaser(_resource);
-    }
-
-    const T& get() const
-    {
-        return _resource;
-    }
-
-    T& get()
-    {
-        return _resource;
-    }
-
-    operator const T&() const
-    {
-        return get();
-    }
-
-    operator T&()
-    {
-        return get();
-    }
-};
-
-int main(void)
+int main()
 {
     if (!glfwInit())
         exit(EXIT_FAILURE);
