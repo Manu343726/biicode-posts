@@ -26,6 +26,7 @@
 
 #include <diego/glfw/include/GLFW/glfw3.h>
 #include <manu343726/scoped_resource/scoped_resouce.hpp>
+#include <manu343726/glfw-example/glfw_app.hpp>
 
 #include <cstdlib>
 #include <cstdio>
@@ -33,50 +34,23 @@
 #include <stdexcept>
 
 
-
-
-int main()
+class example_app : public glfw_app
 {
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-
-    scoped_resource<GLFWwindow*> window
-    {
-    	[](GLFWwindow*& window_handle)
-    	{
-    		window_handle = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-
-    		if(!window_handle) throw std::runtime_error{"Error creating window"};
-    	},
-    	[](GLFWwindow*& window_handle)
-    	{
-    		glfwDestroyWindow(window_handle);
-    	}
-    };
-
-    glfwSetErrorCallback([](int error , const char* desc)
-    {
-    	std::cerr << "ERROR: " << desc << std::endl;		
-    });
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+public:
+    template<typename... ARGS>
+    example_app(ARGS&&... args) : glfw_app{ std::forward<ARGS>(args)... }
+    {}
+    
+    virtual void on_keydown(GLFWwindow* window , int key , int scancode , int action , int mods) override
     {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, GL_TRUE);    		
-    });
+            glfwSetWindowShouldClose(window, GL_TRUE);    
+    }
 
-    while (!glfwWindowShouldClose(window))
+    virtual void glloop() override
     {
-        float ratio;
-        int width, height;
-
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
-
-        glViewport(0, 0, width, height);
+        float ratio = framebuffer_width() / (float)framebuffer_height();
+        
         glClear(GL_COLOR_BUFFER_BIT);
 
         glMatrixMode(GL_PROJECTION);
@@ -88,19 +62,21 @@ int main()
         glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
 
         glBegin(GL_TRIANGLES);
-	        glColor3f(1.f, 0.f, 0.f);
-	        glVertex3f(-0.6f, -0.4f, 0.f);
-	        glColor3f(0.f, 1.f, 0.f);
-	        glVertex3f(0.6f, -0.4f, 0.f);
-	        glColor3f(0.f, 0.f, 1.f);
-	        glVertex3f(0.f, 0.6f, 0.f);
+            glColor3f(1.f, 0.f, 0.f);
+            glVertex3f(-0.6f, -0.4f, 0.f);
+            glColor3f(0.f, 1.f, 0.f);
+            glVertex3f(0.6f, -0.4f, 0.f);
+            glColor3f(0.f, 0.f, 1.f);
+            glVertex3f(0.f, 0.6f, 0.f);
         glEnd();
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
     }
+};
 
-    glfwTerminate();
+int main()
+{
+    auto app = make_app<example_app>("hello!" , 800 , 600);
+    
+    app->start();
 }
 
 //! [code]

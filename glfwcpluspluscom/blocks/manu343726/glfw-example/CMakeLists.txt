@@ -60,7 +60,7 @@ ADD_BIICODE_TARGETS()
 #     ...
 # endif()
 
-target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++11)
+target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++1y)
 
 target_compile_options(${BII_BLOCK_TARGETS} PUBLIC $<$<CONFIG:Debug>: -g -O0>)
 target_compile_options(${BII_BLOCK_TARGETS} PUBLIC $<$<CONFIG:Release>: -O3>)
