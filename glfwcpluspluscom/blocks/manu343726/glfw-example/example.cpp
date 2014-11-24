@@ -27,54 +27,17 @@
 #include <diego/glfw/include/GLFW/glfw3.h>
 #include <manu343726/scoped_resource/scoped_resouce.hpp>
 #include <manu343726/glfw-example/glfw_app.hpp>
+#include <manu343726/glfw-example/ball.hpp>
+#include <manu343726/glfw-example/triangle.hpp>
 
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <stdexcept>
 
-
-class example_app : public glfw_app
-{
-public:
-    template<typename... ARGS>
-    example_app(ARGS&&... args) : glfw_app{ std::forward<ARGS>(args)... }
-    {}
-    
-    virtual void on_keydown(GLFWwindow* window , int key , int scancode , int action , int mods) override
-    {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, GL_TRUE);    
-    }
-
-    virtual void glloop() override
-    {
-        float ratio = framebuffer_width() / (float)framebuffer_height();
-        
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        glMatrixMode(GL_MODELVIEW);
-
-        glLoadIdentity();
-        glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-
-        glBegin(GL_TRIANGLES);
-            glColor3f(1.f, 0.f, 0.f);
-            glVertex3f(-0.6f, -0.4f, 0.f);
-            glColor3f(0.f, 1.f, 0.f);
-            glVertex3f(0.6f, -0.4f, 0.f);
-            glColor3f(0.f, 0.f, 1.f);
-            glVertex3f(0.f, 0.6f, 0.f);
-        glEnd();
-    }
-};
-
 int main()
 {
-    auto app = make_app<example_app>("hello!" , 800 , 600);
+    auto app = make_app<ball>("bouncing ball!" , 800 , 600);
     
     app->start();
 }
