@@ -41,15 +41,15 @@ glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 ## Our goal: A little, funny, squishy, and so cute bouncing ball
 
-Lets write a simple animation of a white bouncing ball. I'm not a game designer, the goal here is to have the animation working with a couple of lines only.   
+Let's write a simple animation of a white bouncing ball. I'm not a game designer, the goal here is to have the animation working with a couple of lines only.   
 
-Apologizes in advance to anyone who's eyes gurt after watching this image:
+Apologizes in advance to anyone who's eyes hurt after watching this image:
 
 ![](http://s27.postimg.org/89p12gptf/Captura.png)  
 *As I said, I'm a programmer...*
 
 ## A glfw application with C++
-glfw has a C API. That's fine, but I'm a C++ programmer. Lets wrap this API in a simple inheritance-based little framework.
+glfw has a C API. That's fine, but I'm a C++ programmer. Let's wrap this API in a simple inheritance-based little framework.
 
 ### The `glfw_app` base class
 
@@ -73,9 +73,9 @@ public:
 };
 ```
 
-This base class is so simple: It manages a glfw window and their OpenGL context for us, wraps (and currently hides) the event and rendering loop, finally and provides us some polymorphic functions to say what to do when a key is pressed, when the window is resized, etc. 
+This base class is simple: It manages a glfw window and their OpenGL context for us, wraps (and currently hides) the event and rendering loop, finally and provides us some polymorphic functions to say what to do when a key is pressed, when the window is resized, etc. 
 
-Take the most simple glfw example, a simple triangle (Extracted from [their docs](http://www.glfw.org/docs/latest/quick.html#quick_example)). It can be written with a couple of lines thanks to our `glfw_class` class:
+Take the most simple glfw example, a simple triangle (Extracted from [glfw docs](http://www.glfw.org/docs/latest/quick.html#quick_example)). It can be written with a couple of lines thanks to our `glfw_class` class:
 
 ``` cpp
 void triangle::on_keydown(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -109,7 +109,7 @@ void triangle::glloop()
 }
 ```
 
-Thats all! All the other things (Buffer swapping, window and gl context management, etc.) is done by the base class. How? Lets see it step by step.
+That's all! All the other things (Buffer swapping, window and gl context management, etc.) is done by the base class. How? Let's see it step by step.
 
 #### Resource management
 
@@ -195,7 +195,7 @@ void glfw_app::on_resize(GLFWwindow* window , int width , int height)
 
 Is not that easy. We cannot just pass polymorphic functions to C callbacks, since they are not convertible to plain function objects. That makes sense, since (even ignoring the dynamic dispatching part) they need an object to be called with.
 
-To be able to inject these polymorphic functions as callbacks for the glfw API, we need a bridge betwen the C and the C++ world. `static` member functions!
+To be able to inject these polymorphic functions as callbacks for the glfw API, we need a bridge between the C and the C++ world. `static` member functions!
 
 ``` cpp
 class glfw_app_manager
@@ -229,7 +229,7 @@ public:
 };
 ```
 
-As I said previously, our app class is actually a singleton. The `glfw_app_manager` class is which really manages it. Stores the current app instance, registers our bridges as callbacks, and then calls our app functions on them.
+As I said previously, our app class is actually a singleton. The `glfw_app_manager` class is the one managing it. Stores the current app instance, registers our bridges as callbacks, and then calls our app functions on them.
 
 Finally, put a bit of dressing to our little framework by writing a function template to easy instance glfw applications:
 
@@ -290,9 +290,9 @@ private:
 };
 ```
 
-We have ball coordinates, ball speed, and its radius. Then a `gravity` constant, since we want our ball to bounce.  
+We have ball coordinates, ball speed, and its radius. There is also a `gravity` constant, since we want our ball to bounce.  
 
-The `on_keydon()` callback is not complex: Just close the window when the user presses `ESC`:
+The `on_keydon()` callback is not complex: Just closes the window when the user presses `ESC`:
 
 ``` cpp
 void ball::on_keydown(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -302,7 +302,7 @@ void ball::on_keydown(GLFWwindow* window, int key, int scancode, int action, int
 }
 ```
 
-Now lets see the body of our rendering loop:
+Now let's see the body of our rendering loop:
 
 ``` cpp
 void ball::glloop()
@@ -332,7 +332,7 @@ void ball::glloop()
 ```
 
 Note how the ball is projected. The visible area of our OpenGL scene (The area which matches the viewport) goes from -1 to 1 in both axes, where -1 is the bottom-left corner of our window, and 1 is its top-left.  
-Working with coordinates [-1,1] makes it simple to deal with window bounds, since they are window size independent.
+Working with coordinates [-1,1] makes it simple to deal with window bounds, since they are independent of the window's size.
 
 Check how the animation works:
 
@@ -351,7 +351,7 @@ Check how the animation works:
 	draw_ball();
 ```
 
-The ball position and speed are updated following the equations `v' = v + a*t` and `p' = p + v * t`, where `v` is velocity (speed), `a` is acceleration (The `gravity` constant), and `t` is time. 
+The ball's position and speed are updated following the equations `v' = v + a*t` and `p' = p + v * t`, where `v` is velocity (speed), `a` is acceleration (The `gravity` constant), and `t` is time. 
 
 Time is measured in frames, so in all the equations `t` is one. That's why there's no `t` in our code. *If you want a stable simulation (independent of frame rate) you should use a more complex technique, like those described in [this article](http://gafferongames.com/game-physics/fix-your-timestep/).*
 
@@ -362,7 +362,7 @@ if (y_ball - radious <= - 1)
 		vy_ball = std::abs(vy_ball);
 ```
 
-Else, apply gravity. Don't apply acceleration when the ball bounces. 
+Also apply gravity. Don't apply acceleration when the ball bounces. 
 
 The final step is to draw the ball: Draw a white "circle" (a regular polygon) using `GL_POLYGON`:
 
@@ -387,7 +387,7 @@ void ball::draw_ball()
 }
 ```
 
-Thats all! Now start our ball app:
+That's all! Now start our ball app:
 
 ``` cpp
 
