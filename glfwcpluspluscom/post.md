@@ -11,7 +11,7 @@ In this article, we will learn how to setup a OpenGL application easily thanks t
 ## An overview of the glfw API
 
 glfw is a C API which relies on callbacks to handle the different configurations, events, errors, etc an OpenGL application would need. 
-Also the multiple resources you may use, such as windows, OpenGL contexts, etc are managed internally by the library, and it only provides you handles as identifiers of those resources.
+Also the multiple resources you may use, such as windows, OpenGL contexts, etc. are managed internally by the library, and it only provides you handles as identifiers of those resources.
 
 ``` c
 GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
@@ -43,10 +43,10 @@ glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 Lets write a simple animation of a white bouncing ball. I'm not a game designer, the goal here is to have the animation working with a couple of lines only.   
 
-Apologizes to anyone who this image hurts their eyes:
+Apologizes in advance to anyone who's eyes gurt after watching this image:
 
 ![](http://s27.postimg.org/89p12gptf/Captura.png)  
-*What I said, I'm a programmer...*
+*As I said, I'm a programmer...*
 
 ## A glfw application with C++
 glfw has a C API. That's fine, but I'm a C++ programmer. Lets wrap this API in a simple inheritance-based little framework.
@@ -73,7 +73,7 @@ public:
 };
 ```
 
-This base class is so simple: It manages a glfw window and their OpenGL context for us, wraps (And currently hides) the event and rendering loop, finally and provides us some polymorphic functions to say what to do when a key is pressed, when the window is resized, etc. 
+This base class is so simple: It manages a glfw window and their OpenGL context for us, wraps (and currently hides) the event and rendering loop, finally and provides us some polymorphic functions to say what to do when a key is pressed, when the window is resized, etc. 
 
 Take the most simple glfw example, a simple triangle (Extracted from [their docs](http://www.glfw.org/docs/latest/quick.html#quick_example)). It can be written with a couple of lines thanks to our `glfw_class` class:
 
@@ -109,11 +109,11 @@ void triangle::glloop()
 }
 ```
 
-Thats all! All the other things (Buffer swapping, window and gl context management,etc) is done by the base class. How? Lets see step by step.
+Thats all! All the other things (Buffer swapping, window and gl context management, etc.) is done by the base class. How? Lets see it step by step.
 
 #### Resource management
 
-As we seen above, the `glfw_app` class is designed to manage one glfw window and its corresponding OpenGl setup. In that way, all the glfw/OpenGL setup is done in the constructor of the class, and all the cleanup on the destructor:
+As we have seen above, the `glfw_app` class is designed to manage one glfw window and its corresponding OpenGl setup. In that way, all the glfw/OpenGL setup is done in the constructor of the class, and all the cleanup on the destructor:
 
 ``` cpp
 glfw_app::glfw_app(const std::string& window_title , int window_width , int window_height)
@@ -147,7 +147,7 @@ The class acts as a singleton: There is only one `glfw_app` instance per applica
 
 #### Main loop
 
-The main loop is encapsulated. This makes simpler to write a custom OpenGL application, since in most of the cases this loop is almost the same (Fetch events, render, swap buffers):
+The main loop is encapsulated. This makes it simpler to write a custom OpenGL application, since in most of the cases this loop is almost the same (Fetch events, render, swap buffers):
 
 ``` cpp
 void glfw_app::start()
@@ -193,7 +193,7 @@ void glfw_app::on_resize(GLFWwindow* window , int width , int height)
 
 ### Callback API vs OOP
 
-Is not that easy. We cannot just pass polymorphic functions to C callbacks, since they are not convertible to plain function objects. That makes sense, since (even ignoring the dynamic dispatching part) they need an objetc to be called with.
+Is not that easy. We cannot just pass polymorphic functions to C callbacks, since they are not convertible to plain function objects. That makes sense, since (even ignoring the dynamic dispatching part) they need an object to be called with.
 
 To be able to inject these polymorphic functions as callbacks for the glfw API, we need a bridge betwen the C and the C++ world. `static` member functions!
 
@@ -290,7 +290,7 @@ private:
 };
 ```
 
-We have ball coordinates, ball speed, and its radius. Then a `gravity` constant, since we want our ball bounce.  
+We have ball coordinates, ball speed, and its radius. Then a `gravity` constant, since we want our ball to bounce.  
 
 The `on_keydon()` callback is not complex: Just close the window when the user presses `ESC`:
 
@@ -331,8 +331,8 @@ void ball::glloop()
 }
 ```
 
-Note how the ball is projected. The visible area of our OpenGL scene (The area which matches the viewport) goes from -1 to 1 in both axes, where -1 is the bottom/left our our window, and 1 is its top/left.  
-Working with coordinates [-1,1] makes simple to deal with window bounds, since they are window size independent.
+Note how the ball is projected. The visible area of our OpenGL scene (The area which matches the viewport) goes from -1 to 1 in both axes, where -1 is the bottom-left corner of our window, and 1 is its top-left.  
+Working with coordinates [-1,1] makes it simple to deal with window bounds, since they are window size independent.
 
 Check how the animation works:
 
@@ -353,9 +353,9 @@ Check how the animation works:
 
 The ball position and speed are updated following the equations `v' = v + a*t` and `p' = p + v * t`, where `v` is velocity (speed), `a` is acceleration (The `gravity` constant), and `t` is time. 
 
-Time is measured on frames, so in all the equations `t` is one. That's why there's no `t` in our code. *If you want a stable simulation (Independent of frame rate) you should use a more complex technique, like those described in [this article](http://gafferongames.com/game-physics/fix-your-timestep/).*
+Time is measured in frames, so in all the equations `t` is one. That's why there's no `t` in our code. *If you want a stable simulation (independent of frame rate) you should use a more complex technique, like those described in [this article](http://gafferongames.com/game-physics/fix-your-timestep/).*
 
-If the ball goes out of the window bounds, that is, `y_ball - radious` is lesser than -1, we should make the ball go upwards: Set its vertical speed as positive:
+If the ball goes out of the window bounds, that is, `y_ball - radious` is less than -1, we should make the ball go upwards: Set its vertical speed as positive:
 
 ``` cpp
 if (y_ball - radious <= - 1)
@@ -364,7 +364,7 @@ if (y_ball - radious <= - 1)
 
 Else, apply gravity. Don't apply acceleration when the ball bounces. 
 
-The final step is to draw the ball: Draw a white "circle" (A regular polygon) using `GL_POLYGON`:
+The final step is to draw the ball: Draw a white "circle" (a regular polygon) using `GL_POLYGON`:
 
 ``` cpp
 void ball::draw_ball()
@@ -404,7 +404,7 @@ int main()
 
 ## Summary
 
-glfw is a great library to write OpenGL applications. Its C API is clear and simple, and making it work in  the C++ way can be done with a little effort.   
-Here we learnt how to make a little framework to write simple OpenGL applications in a OO way. Encapsulating the most common tasks in a base class reduces noise in our simple OpenGL examples.
+glfw is a great library to write OpenGL applications. Its C API is clear and simple, and making it work in  the C++ way can be done with just a little effort.   
+We learnt here how to make a little framework to write simple OpenGL applications in a OO way. Encapsulating the most common tasks in a base class reduces noise in our simple OpenGL examples.
 
 All the code shown here is available at [biicode](https://www.biicode.com/), a dependency manager for C and C++. Just open the block with `$ bii open manu343726/glfw-examples` and configure it to use your preferred C++ compiler.
