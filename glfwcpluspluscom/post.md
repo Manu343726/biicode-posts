@@ -48,7 +48,7 @@ Apologizes in advance to anyone who's eyes hurt after watching this image:
 ![](http://s27.postimg.org/89p12gptf/Captura.png)  
 *As I said, I'm a programmer...*
 
-## A glfw application with C++
+## A glfw application with C++11
 glfw has a C API. That's fine, but I'm a C++ programmer. Let's wrap this API in a simple inheritance-based little framework.
 
 ### The `glfw_app` base class
@@ -237,7 +237,7 @@ Finally, put a bit of dressing to our little framework by writing a function tem
 template<typename T , typename... ARGS , typename = typename std::enable_if<std::is_base_of<glfw_app,T>::value>::type>
 std::unique_ptr<T> make_app(ARGS&&... args)
 {
-    auto app = std::make_unique<T>( std::forward<ARGS>(args)...);
+    std::unique_ptr<T> app{ new T{ std::forward<ARGS>(args)...} };
     
     glfw_app_manager::start_app(app.get());
     
@@ -360,7 +360,7 @@ If the ball goes out of the window bounds, that is, `y_ball - radious` is less t
 
 ``` cpp
 if (y_ball - radious <= - 1)
-		vy_ball = std::abs(vy_ball);
+    vy_ball = std::abs(vy_ball);
 ```
 
 Also apply gravity. Don't apply acceleration when the ball bounces. 
@@ -412,11 +412,22 @@ Our bouncing ball example was released as the  [`manu343726/glfw-example`](https
 $ bii init biicode_project
 $ cd biicode_project
 $ bii open manu343726/glfw_example
-$ bii cpp:configure -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+$ bii cpp:configure
 $ bii cpp:build
 $ ./bin/manu343726_glfw-example_main
 ```
-*Build may fail on linux platforms if you have some X11 libraries required by glfw not installed. They are checked during `bii cpp:configure`, follow its output if something goes wrong.*
+*Build may fail on linux platforms if you have some X11 libraries required by glfw not installed. They are checked during `bii cpp:configure`, follow its output if something goes wrong.
+
+Also note the code snippets of this article target C++11, so you should use a C++11 compliant compiler like GCC 4.8.1 (Shipped by default by Ubuntu 14.04 and the latest MinGW for Windows), Clang 3.3, or Visual Studio 2013.*
+
+Finally, if you want to try more glfw examples, the guys at biicode have a [`examples/glfw`](http://www.biicode.com/examples/examples/glfw/master/0/particles.c) block with a complete set of examples extracted from the original glfw distribution.
+
+``` bash
+$ bii open examples/glfw
+$ bii cpp:configure
+$ bii cpp:build
+$ ./bin/examples_glfw_particles
+```
 
 ## Summary
 
