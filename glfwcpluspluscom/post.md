@@ -291,6 +291,7 @@ private:
 ```
 
 We have ball coordinates, ball speed, and its radius. There is also a `gravity` constant, since we want our ball to bounce.  
+The template stuff on the constructor is a variadic template with perfect forwarding, just to bypass all the arguments to the base class constructor.
 
 The `on_keydon()` callback is not complex: Just closes the window when the user presses `ESC`:
 
@@ -402,9 +403,22 @@ int main()
 }
 ```
 
+## Build and run the example
+
+[biicode](www.biicode.com) is a dependency manager for C and C++, in the same way as pip for python or Maven for Java. They provide a block (package) with the glfw library, so making our example running accross multiple platforms is so easy.  
+Our bouncing ball example was released as the  [`manu343726/glfw-example`](https://www.biicode.com/manu343726/glfw-example) block. Open and run it is as easy as:
+
+``` bash
+$ bii init biicode_project
+$ cd biicode_project
+$ bii open manu343726/glfw_example
+$ bii cpp:configure -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+$ bii cpp:build
+$ ./bin/manu343726_glfw-example_main
+```
+*Build may fail on linux platforms if you have some X11 libraries required by glfw not installed. They are checked during `bii cpp:configure`, follow its output if something goes wrong.*
+
 ## Summary
 
 glfw is a great library to write OpenGL applications. Its C API is clear and simple, and making it work in  the C++ way can be done with just a little effort.   
 We learnt here how to make a little framework to write simple OpenGL applications in a OO way. Encapsulating the most common tasks in a base class reduces noise in our simple OpenGL examples.
-
-All the code shown here is available at [biicode](https://www.biicode.com/), a dependency manager for C and C++. Just open the block with `$ bii open manu343726/glfw-examples` and configure it to use your preferred C++ compiler.
