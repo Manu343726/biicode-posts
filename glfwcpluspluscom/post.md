@@ -405,7 +405,7 @@ int main()
 
 ## Build and run the example
 
-[biicode](www.biicode.com) is a dependency manager for C and C++, in the same way as pip for python or Maven for Java. They provide a block (package) with the glfw library, so making our example running accross multiple platforms is so easy.  
+[biicode](https://www.biicode.com) is a dependency manager for C and C++, in the same way as pip for python or Maven for Java. They provide a block (package) with the glfw library, so making our example running accross multiple platforms is so easy.  
 Our bouncing ball example was released as the  [`manu343726/glfw-example`](https://www.biicode.com/manu343726/glfw-example) block. Open and run it is as easy as:
 
 ``` bash
@@ -420,7 +420,7 @@ $ ./bin/manu343726_glfw-example_main
 
 Also note the code snippets of this article target C++11, so you should use a C++11 compliant compiler like GCC 4.8.1 (Shipped by default by Ubuntu 14.04 and the latest MinGW for Windows), Clang 3.3, or Visual Studio 2013.*
 
-Finally, if you want to try more glfw examples, the guys at biicode have a [`examples/glfw`](http://www.biicode.com/examples/examples/glfw/master/0/particles.c) block with a complete set of examples extracted from the original glfw distribution.
+Finally, if you want to try more glfw examples, the guys at biicode have a [`examples/glfw`](https://www.biicode.com/examples/examples/glfw/master/0/particles.c) block with a complete set of examples extracted from the original glfw distribution.
 
 ``` bash
 $ bii open examples/glfw
