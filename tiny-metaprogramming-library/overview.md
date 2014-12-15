@@ -92,7 +92,7 @@ The key point here is that a matrix row can bee seen as a slice, a submatrix can
 
 Even if we decide to use the inheritance approach (`matrix` inherits from `slice`, `row` inherits from `slice`, etc), C++ has great (crazy) things to achieve this in a performant way, like [CRTP](http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern). Or going far enough, using the classic dynamic dispatch [on the right way](http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html).
 
-**Performance matters. C++ is a language for performance.** If that doesn't been the case, I would be using python or even ruby. But we are here because we need to squeeze each CPU cicle. And nowadays that performance comes simply by understanding how the hardware works, and giving enough information to your compiler. Both things that C++ does pretty well, or at least gives you the opportunity to do it well.   
+**Performance matters. C++ is a language for performance.** If that were not the case, I would be using python or even ruby. But we are here because we need to squeeze each CPU cicle. And nowadays that performance comes simply by understanding how the hardware works, and giving enough information to your compiler. Both things that C++ does pretty well, or at least gives you the opportunity to do it well.   
 
 Don't throw away that opportunities writing oh-my-runtime designs. Use your type system (Literally), understand your compiler capabilities.
 
@@ -156,8 +156,8 @@ I'm a big fan of GitHub, so my version of the Tiny Metaprogramming Library [will
 Hosting the library is one thing, but using it is a completely different beast.   
 Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an `import`-like sentence and a `install dependencies` command.
 
-[biicode](www.biicode.com) is a spanish startup focused on giving the power of automatic dependency management to C and C++. It's cmake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.  
-The tool works like a charm, resolving all the dependencies and generating pretty projects via cmake generators just `#include`ing what you need.
+[biicode](www.biicode.com) is a startup focused on giving the power of automatic dependency management to C and C++. It's cmake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.  
+The tool works like a charm, resolving all the dependencies and generating pretty projects via cmake generators just `#include`ing what you need:
 
 ``` cmake
 include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
@@ -203,19 +203,31 @@ $ bii find
 $ bii cpp:configure -G "Unix Makefiles"
 $ bii cpp:build
 $ ./bin/examples_boost-coroutine_main
-hello world!
+Hello, world!
 ```
 
-So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, [`manu343726/tiny`](https://www.biicode.com/manu343726/tiny), and all the examples provided in the blogposts will be use biicode for setup and building.
+So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, [`manu343726/tiny`](https://www.biicode.com/manu343726/tiny), with all the examples provided in the blogposts will be using biicode for setup and building.  
+I have developed a metaprogramming library before, the [Turbo Metaprogramming Library](https://github.com/Manu343726/Turbo). Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.
 
-The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library version, in a way that everybody is implementing and trying the lessons learned.  
-Of course you can ask me whatever questions you like, posting comments on posts about specific questions, or checking my implementation on GitHub asking via issues.
+The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.  
+Of course you can ask me whatever questions you like, posting comments on posts about specific questions covered there, or questions about my reference implementation on github via the issues system.
 
 ### The blogposts
 
-Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library. 
-
+Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.   
 Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learn and implemented before.
+
+As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I'm thinking for the posts:
+
+ - Templates, basic concepts (Just re-read [this](http://www.codeproject.com/Articles/826229/Template-Metaprogramming-with-Modern-Cplusplus-tem))
+ - Type parameters vs non-type parameters. Value boxing and template boxing (i.e. `std::integral_constant` and `tml::lazy`).
+ - Mastering the Haskell bastard: Values and expressions
+ - Improving expression evaluation. 
+ - Lists
+ - Algorithms
+ - Iterators
+ - Lambda expressions
+ - Monads
 
 ## Are you ready?
 
