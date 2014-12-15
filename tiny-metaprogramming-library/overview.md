@@ -1,14 +1,14 @@
 
 # A Tiny Metaprogramming Library
 
-Seems that people likes template metaprogramming. After three successful blog posts about tmp, with 5k views on average each one, I'm sure people likes and wants to understand that obscure corner of C++. 
+It seems people like template metaprogramming. After three successful blog posts about tmp - with 5k views on average each one - I'm sure people like and even want to understand that obscure corner of C++. 
 
-It's not a funny way to play with the compiler only. **Template metaprogramming is a powerful tool for C++ developers, and something that many of us must deal with everyday.**  
+It's not a funny way to play with the compiler only, **template metaprogramming is a powerful tool for C++ developers and something that many of us must deal with everyday.**  
 
 ## Why?
 
-C++ is a great language to write applications, but's even better to write libraries. You can write abstract, natural (readable), and performant generic APIs.  
-For me the best example is the `vector` template (The algebraic vector, not the C++ `std::vector` one):
+C++ is a great language to write applications in, but it's even better to write libraries. You can write abstract, natural (readable) and performant generic APIs.  
+To me the best example is the `vector` template (The algebraic vector, not the C++ `std::vector` one):
 
 ``` cpp
 template<typename T>
@@ -49,7 +49,7 @@ struct vector3
 };
 ```
 
-Using that `vector3` template is easy and resembles algebraic notation:
+Using that `vector3` template is easy and it resembles algebraic notation:
 
 ``` cpp
 vector3<int> a{1,2,3}, b{4,5,6};
@@ -57,7 +57,7 @@ vector3<int> c = a + b;
 bool eq = c == vector3<int>{5,7,9};
 ```
 
-The same for an hypothetical `matrix` template:
+The same for a hypothetical `matrix` template:
 
 ``` cpp
 matrix<int,2,2> m{ {1,2}, {3,4} };
@@ -80,40 +80,40 @@ a.row(0) = a.row(0).mul(4).add(a.row(0));
 
 There are a few points that should be noted here:
 
-#### Don't leave to runtime decisions based on properties you know at compile-tme
+#### Don't leave to runtime decisions based on properties you know at compile-time
 
 In general that only serves to increase runtime overhead. 
 
-In the matrix example, the matrix dimensions are known at compile time. Except you have some kind of [VLA](http://en.wikipedia.org/wiki/Variable-length_array) allocated on the stack, has no much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.
+In the matrix example, the matrix dimensions are known at compile time. Despite having some kind of [VLA](http://en.wikipedia.org/wiki/Variable-length_array) allocated on the stack, it hasn't got much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.
 
-Also consider the matrix design. How you would implement this?  
+Consider also the matrix's design. How you would implement this?  
 What comes to my mind is a `matrix_slice` class with all the algebraic operations between matrix slices, where a slice is only a portion of a matrix (Maybe `matrix_view` is a common name for this thing with non-owning semantics).  
 The key point here is that a matrix row can bee seen as a slice, a submatrix can be seen as a slice, and even a matrix can be seen as a slice. Implement matrix ops only in one site (the `slice`) then propagate them along your implementation via composition, inheritance, type aliasing, whatever you like.
 
-Even if we decide to use the inheritance approach (`matrix` inherits from `slice`, `row` inherits from `slice`, etc), C++ has great (crazy) things to achieve this in a performant way, like [CRTP](http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern). Or going far enough, using the classic dynamic dispatch [on the right way](http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html).
+Even if we decide to use the inheritance approach (`matrix` inherits from `slice`, `row` inherits from `slice`, etc), C++ has great (crazy) things to achieve this in a performant way, like [CRTP](http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern); or going further enough, using the classic dynamic dispatch [the right way](http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html).
 
-**Performance matters. C++ is a language for performance.** If that were not the case, I would be using python or even ruby. But we are here because we need to squeeze each CPU cicle. And nowadays that performance comes simply by understanding how the hardware works, and giving enough information to your compiler. Both things that C++ does pretty well, or at least gives you the opportunity to do it well.   
+**Performance matters. C++ is a language for performance.** If that was not the case, I would be using python or even ruby. But we are here because we need to squeeze down each CPU cicle. Nowadays that performance is only provided when understanding how hardware works and giving enough information to your compiler. C++ does both thing pretty well, or at least it gives you the opportunity to do them properly.   
 
-Don't throw away that opportunities writing oh-my-runtime designs. Use your type system (Literally), understand your compiler capabilities.
+Don't throw away those opportunities writing oh-my-runtime designs. Use your type system (literally); understand your compiler capabilities.
 
 #### OO is not the 42 of programming
 
 "*Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other"* That's **The Big Lie Of Object Oriented Programming**.
 
-You can't model every system with objects only. There are some actors on that system, abstracts things, that cannot be represented easily as an "*object*". A function is a function, don't force it to be something else. I want a set of functions, not a class full of static methods. Its true, its `std::cos()` vs `Math.cos()` only, but are the design concepts what points here.  
+You can't model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an "*object*". A function is a function, don't force it to be something else. I want a set of functions, not a class full of static methods. It's true, it's `std::cos()` vs `Math.cos()` only, but are the design concepts what points here.  
 
-Take a look at the OO example above again:
+Take a look at the above OO example again:
 
 ``` java
 c = a.add(b);
 a.row(0) = a.row(0).mul(4).add(a.row(0));
 ```
 
-`b` is added to `a`? Addition is a binary operation, that means neither of their operands have more importance than the other, they just participate on the operation. `b` is not being added to `a`, is the addition of `a` and `b` what produces a result `c`.   
+`b` is added to `a`? Addition is a binary operation, that means that neither of their operands have more importance than the other, they just participate in the operation. `b` is not being added to `a`, it's the addition of `a` and `b` what produces a result, `c`.   
 
-Thats a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: The operator, the first operand, and the second operand. **OO forgets the first one, with one object playing two roles at the same time**.
+That's a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: the operator, the first operand, and the second operand. **OO forgets about the first one, with one object playing two roles at the same time**.
 
-I'm being pedant? Consider this:
+Am I being pedant? Consider this:
 
 ``` java
 c = b.add(a);
@@ -121,7 +121,7 @@ c = b.add(a);
 
 Is there any semantic difference with the previous example? 
 
-As I said, there aren't objects only in a system. Thankfully, syntax apart, C++ takes this in the right way, differentiating between functions and objects. In C++ addition there are three things: The two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function. 
+As I said, there aren't objects only in a system. Thankfully, syntax apart, C++ takes this the right way, differentiating between functions and objects. In C++ addition there are three things: two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function. 
 
 **There are different categories in a system, everything cannot be modeled directly as an object**. The power of C++ comes from its multiparadigm spirit, allowing us to decide what programming paradigm (OO, structured, functional, generic...) is better for each situation.
 
@@ -129,8 +129,8 @@ As I said, there aren't objects only in a system. Thankfully, syntax apart, C++ 
 
 Because implementing these clear, performant, and almost-static interfaces is not that easy.
 
-You want to automate the implementation of that libraries, or at least describe the most common cases in a generic way. Where being generic does not mean parametrizing the element type only... Generics are only a simple toy for kids, to make them think that their libraries are generic, but it's really a casting party at Mr Autoboxing house.   
-Being generic means if I manage a dynamic array, I don't know the specific policy for dynamic memory the user wants. I just parametrize it:
+You want to automate the implementation of those libraries, or at least describe the most common cases in a generic way, where being generic does not mean parametrizing the element type only... Generics are only a simple toy for kids, to make them think that their libraries are generic, but it's really a casting party at Mr. Autoboxing house.   
+Being generic means that if I manage a dynamic array, I don't know the specific policy for dynamic memory the user wants. I just parametrize it:
 
 ``` cpp
 template<
@@ -139,7 +139,7 @@ template<
 > class vector;
 ```
 
-The problem is that's only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc. 
+The problem is that that's only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc. 
 
 Template meta-programming helps to describe and implement that kind of generic designs, but its syntax makes your maintainer commit suicide just after approaching the codebase.
 
@@ -156,8 +156,8 @@ I'm a big fan of GitHub, so my version of the Tiny Metaprogramming Library [will
 Hosting the library is one thing, but using it is a completely different beast.   
 Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an `import`-like sentence and a `install dependencies` command.
 
-[biicode](www.biicode.com) is a startup focused on giving the power of automatic dependency management to C and C++. It's cmake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.  
-The tool works like a charm, resolving all the dependencies and generating pretty projects via cmake generators just `#include`ing what you need:
+[biicode](www.biicode.com) is a startup focused on giving the power of automatic dependency management to C and C++. It's CMake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.  
+The tool works like a charm, resolving all the dependencies and generating pretty projects via CMake generators just `#include`ing what you need:
 
 ``` cmake
 include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
@@ -206,16 +206,16 @@ $ ./bin/examples_boost-coroutine_main
 Hello, world!
 ```
 
-So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, [`manu343726/tiny`](https://www.biicode.com/manu343726/tiny), with all the examples provided in the blogposts will be using biicode for setup and building.  
+So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, [`manu343726/tiny`](https://www.biicode.com/manu343726/tiny), and all the examples provided in the blogposts will be using biicode for setup and building.  
 I have developed a metaprogramming library before, the [Turbo Metaprogramming Library](https://github.com/Manu343726/Turbo). Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.
 
 The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.  
-Of course you can ask me whatever questions you like, posting comments on posts about specific questions covered there, or questions about my reference implementation on github via the issues system.
+Of course you can ask me whatever questions you like, post comments in the blogposts about specific questions covered there, or questions about my reference implementation on github via the issues system.
 
 ### The blogposts
 
 Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.   
-Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learn and implemented before.
+Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learnt and implemented before.
 
 As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I'm thinking for the posts:
 
@@ -231,6 +231,6 @@ As the series and the libraries evolve my criteria may change, depending on your
 
 ## Are you ready?
 
-I hope you like this idea. Its not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I'm the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback. 
+I hope you like this idea. It's not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I'm the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback. 
 
 > Written with [StackEdit](https://stackedit.io/).
