@@ -100,7 +100,7 @@ Don't throw away those opportunities writing oh-my-runtime designs. Use your typ
 
 "*Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other"* That's **The Big Lie Of Object Oriented Programming**.
 
-You can't model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an "*object*". A function is a function, don't force it to be something else. I want a set of functions, not a class full of static methods. It's true, it's `std::cos()` vs `Math.cos()` only, but are the design concepts what points here.  
+You can't model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an "*object*". A function is a function, don't force it to be something else. I want a set of functions, not a class full of static methods.It's true. It all boils down to `std::cos()` vs. `Math.cos()` but what's relevant to me is the design of the code.
 
 Take a look at the above OO example again:
 
